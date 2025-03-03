@@ -75,12 +75,19 @@ def find_arbitrage():
     
     if not profitable_trades.empty:
         print("Potential arbitrage opportunities found:")
-        print(profitable_trades[['token', 'profit_buy_icpswap', 'profit_buy_kongswap', 'profit_buy_otherdex']])
+        for index, row in profitable_trades.iterrows():
+            max_profit = max(row['profit_buy_icpswap'], row['profit_buy_kongswap'], row['profit_buy_otherdex'])
+            if max_profit == row['profit_buy_icpswap']:
+                print(f"Swap {row['token']} from ICPSwap to KongSwap for {max_profit*100:.2f}% profit.")
+            elif max_profit == row['profit_buy_kongswap']:
+                print(f"Swap {row['token']} from KongSwap to ICPSwap for {max_profit*100:.2f}% profit.")
+            else:
+                print(f"Swap {row['token']} from ICPSwap to OtherDEX for {max_profit*100:.2f}% profit.")
     else:
         print("No arbitrage opportunities at the moment.")
 
-# Run the bot every 30 seconds
+# Run the bot every 10 seconds
 if __name__ == "__main__":
     while True:
         find_arbitrage()
-        time.sleep(30)
+        time.sleep(10)
